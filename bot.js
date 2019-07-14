@@ -7,16 +7,20 @@ client.once('ready', () => {
 
 let prefix = '!';
 
-var commands = ["ping", "beep", "hello", "buckets", "kawhinot", "rng"];
+var commands = ["ping", "beep", "hello", "buckets", "kawhinot", "rng", "rngscaled"];
 
 client.on('message', message => {
-	if (message.content.startsWith(`${prefix}ping`)) {
+
+    const args = message.content.slice(prefix.length).trim().split(/ +/g);
+    const command = args.shift().toLowerCase();
+
+	if (command == commands[0]) {
         message.channel.send('Pong.');
     } 
-    else if (message.content.startsWith(`${prefix}beep`)) {
+    else if (command == commands[1]) {
         message.channel.send('Boop.');
     }
-    else if (message.content.startsWith(`${prefix}hello`)) {
+    else if (command == commands[2]) {
         message.channel.send('Hola.');
         setTimeout(() => {
             message.channel.send('Bonjour.');
@@ -25,22 +29,41 @@ client.on('message', message => {
             message.channel.send('Ni Hao.');
             }, 500);
     }
-    else if (message.content.startsWith(`${prefix}buckets`)) {
+    else if (command == commands[3]) {
         message.channel.send('Board man gets paid.');
     }
-    else if (message.content.startsWith(`${prefix}kawhinot`)) {
+    else if (command == commands[4]) {
         message.channel.send('https://youtu.be/5oHrcAdThNk?t=275');
     }
-    else if (message.content.startsWith(`${prefix}rng`)) {
+    else if (command == commands[5]) {
         var randomNum = Math.floor(Math.random() * 100);
         message.channel.send("RANDOM NUMBER: " + randomNum);
     }
-    else if (message.content.startsWith(`${prefix}commands`)) {
-        var command = "List of commands:\n";
+    else if (command == commands[6])
+    {
+        let rngStart = parseInt(args[0]);
+        let rngEnd = parseInt(args[1]);
+        var randomNum = Math.floor(Math.random() * rngEnd) + rngStart;
+        message.channel.send('RANDOM NUMBER BETWEEN ' + rngStart + ' and ' + rngEnd + ': ' + randomNum);
+    }
+    else if (command == "commands") {
+        var outputCommands = "List of commands:\n";
         for (var i = 0; i < commands.length; i++) {
-            command += "!" + commands[i] + "\n";
+            outputCommands += "!" + commands[i] + "\n";
         }
-        message.channel.send(command);
+        message.channel.send(outputCommands);
+    }
+});
+
+client.on('presenceUpdate', (oldMember, newMember) => {
+    if (newMember.presence.game != undefined)
+    {
+        var game = newMember.presence.game;
+        
+        if (game.name.startsWith("Rainbow Six Siege"))
+        {
+            message.channel.send('@' + newMember.displayName + ' why are you playing Siege?')
+        }
     }
 });
 
